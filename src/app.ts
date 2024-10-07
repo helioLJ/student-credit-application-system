@@ -4,7 +4,7 @@ import studentRoutes from './routes/studentRoutes';
 import creditRoutes from './routes/creditRoutes';
 import adminRoutes from './routes/adminRoutes';
 import dotenv from 'dotenv';
-import { initializeDataSource } from './config/database';
+import { initializeAppDataSource } from './config/database';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
 
@@ -29,7 +29,7 @@ app.use(
 );
 
 export const startServer = async (): Promise<void> => {
-  await initializeDataSource();
+  await initializeAppDataSource();
 
   const port = process.env.PORT || 3000;
   app.listen(port, (): void => {

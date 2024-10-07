@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test jest --silent",
+    "test": "NODE_ENV=test jest --runInBand --silent",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "npx eslint . --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "start": "ts-node src/server.",
+    "start": "ts-node src/server.ts",
     "dev": "nodemon --exec ts-node src/server.ts",
-    "seed": "ts-node src/seeds/runSeed.ts"
+    "seed": "ts-node src/seeds/runSeed.ts",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:run": "npm run typeorm -- migration:run -d src/config/database.ts"
   },
   "keywords": [],
   "author": "",

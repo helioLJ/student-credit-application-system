@@ -1,28 +1,17 @@
 import request from 'supertest';
-import { AppDataSource, initializeDataSource } from '../src/config/database';
+import { AppDataSource } from '../src/config/database';
 import app from '../src/app';
+import { setupTestDatabase, teardownTestDatabase } from '../src/test-utils/setup-test-db';
 
 describe('Student API', () => {
   beforeAll(async () => {
-    await initializeDataSource();
-    if (!AppDataSource.isInitialized) {
-      await AppDataSource.initialize();
-    }
+    await setupTestDatabase();
   });
 
   afterAll(async () => {
-    if (AppDataSource.isInitialized) {
-      await AppDataSource.destroy();
-    }
+    await teardownTestDatabase();
   });
 
-  afterEach(async () => {
-    const entities = AppDataSource.entityMetadatas;
-    for (const entity of entities) {
-      const repository = AppDataSource.getRepository(entity.name);
-      await repository.clear();
-    }
-  });
 
   describe('POST /api/students/register', () => {
     it('should register a new student', async () => {

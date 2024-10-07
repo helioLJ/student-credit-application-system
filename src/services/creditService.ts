@@ -13,18 +13,22 @@ export class CreditService {
   }
 
   async applyForCredit(studentId: number, amount: number): Promise<CreditApplication> {
-    const student = await this.studentRepository.findOne({ where: { id: studentId } });
+    const studentRepository = AppDataSource.getRepository(Student);
+    const student = await studentRepository.findOne({ where: { id: studentId } });
+
     if (!student) {
+      console.error(`Student with id ${studentId} not found`);
       throw new Error('Student not found');
     }
 
-    const newApplication = this.creditApplicationRepository.create({
+    const creditApplicationRepository = AppDataSource.getRepository(CreditApplication);
+    const newApplication = creditApplicationRepository.create({
+      student,
       amount,
       status: 'pending',
-      student,
     });
 
-    return await this.creditApplicationRepository.save(newApplication);
+    return await creditApplicationRepository.save(newApplication);
   }
 
   async getAllApplications(): Promise<CreditApplication[]> {

@@ -22,10 +22,15 @@ export class CreditController {
       const application = await this.creditService.applyForCredit(studentId, amount);
       res.status(201).json({ message: 'Credit application submitted successfully', application });
     } catch (error) {
-      if (error instanceof Error && error.message === 'Student not found') {
-        res.status(404).json({ error: error.message });
+      if (error instanceof Error) {
+        console.error('Error in applyCreditApplication:', error.message);
+        if (error.message === 'Student not found') {
+          res.status(404).json({ error: error.message });
+        } else {
+          res.status(500).json({ error: 'Internal server error' });
+        }
       } else {
-        console.error('Error in applyCreditApplication:', error);
+        console.error('Unknown error in applyCreditApplication:', error);
         res.status(500).json({ error: 'Internal server error' });
       }
     }

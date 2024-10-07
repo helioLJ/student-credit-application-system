@@ -1,35 +1,24 @@
 import request from 'supertest';
 import { CreditApplication } from '../src/models/CreditApplication';
 import app from '../src/app';
-import { AppDataSource, initializeDataSource } from '../src/config/database';
+import { AppDataSource } from '../src/config/database';
 import { Admin } from '../src/models/Admin';
 import bcrypt from 'bcrypt';
+import { setupTestDatabase, teardownTestDatabase } from '../src/test-utils/setup-test-db';
 
 describe('Credit Application Integration Tests', () => {
   let authToken: string;
   let adminToken: string;
 
   beforeAll(async () => {
-    await initializeDataSource();
-    if (!AppDataSource.isInitialized) {
-      await AppDataSource.initialize();
-    }
+    await setupTestDatabase();
   });
 
   afterAll(async () => {
-    if (AppDataSource.isInitialized) {
-      await AppDataSource.destroy();
-    }
+    await teardownTestDatabase();
   });
 
   beforeEach(async () => {
-    // Clear the database before each test
-    const entities = AppDataSource.entityMetadatas;
-    for (const entity of entities) {
-      const repository = AppDataSource.getRepository(entity.name);
-      await repository.clear();
-    }
-
     // Create an admin user
     const adminRepository = AppDataSource.getRepository(Admin);
     const hashedPassword = await bcrypt.hash('adminpass', 10);
@@ -40,13 +29,17 @@ describe('Credit Application Integration Tests', () => {
     await adminRepository.save(admin);
 
     // Register and login a test student
-    await request(app)
+    const registerResponse = await request(app)
       .post('/api/students/register')
       .send({ name: 'Test Student', email: 'test@example.com', password: 'password123' });
+    
+    console.log('Student registration response:', registerResponse.status, registerResponse.body);
 
     const loginResponse = await request(app)
       .post('/api/students/login')
       .send({ email: 'test@example.com', password: 'password123' });
+
+    console.log('Student login response:', loginResponse.status, loginResponse.body);
 
     authToken = loginResponse.body.token;
 
@@ -54,6 +47,8 @@ describe('Credit Application Integration Tests', () => {
     const adminLoginResponse = await request(app)
       .post('/api/admin/login')
       .send({ email: 'admin@example.com', password: 'adminpass' });
+
+    console.log('Admin login response:', adminLoginResponse.status, adminLoginResponse.body);
 
     expect(adminLoginResponse.status).toBe(200);
     expect(adminLoginResponse.body).toHaveProperty('token');
@@ -66,6 +61,10 @@ describe('Credit Application Integration Tests', () => {
         .post('/api/credits/apply')
         .set('Authorization', `Bearer ${authToken}`)
         .send({ amount: 5000 });
+
+      if (response.status !== 201) {
+        console.error('Apply for credit failed:', response.body);
+      }
 
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('message', 'Credit application submitted successfully');
