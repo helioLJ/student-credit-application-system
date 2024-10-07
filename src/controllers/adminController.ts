@@ -24,6 +24,5 @@ export class AdminController {
   }
 }
 
-// Export an instance of the method for use in routes
 export const adminController = new AdminController();
 export const loginAdmin = adminController.loginAdmin.bind(adminController);

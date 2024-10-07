@@ -39,7 +39,6 @@ export class StudentController {
   }
 }
 
-// Export instances of the methods for use in routes
 export const studentController = new StudentController();
 export const registerStudent = studentController.registerStudent.bind(studentController);
 export const loginStudent = studentController.loginStudent.bind(studentController);

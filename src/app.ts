@@ -18,7 +18,6 @@ app.use('/api/students', studentRoutes);
 app.use('/api/credits', creditRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Add Swagger UI middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Global error handler
