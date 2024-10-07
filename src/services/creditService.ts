@@ -31,7 +31,7 @@ export class CreditService {
     return await this.creditApplicationRepository.find({ relations: ['student'] });
   }
 
-  async updateApplicationStatus(id: number, status: 'pending' | 'approved' | 'rejected'): Promise<CreditApplication> {
+  async updateApplicationStatus(id: number, status: CreditApplication['status']): Promise<CreditApplication> {
     const application = await this.creditApplicationRepository.findOne({ where: { id } });
     if (!application) {
       throw new Error('Application not found');

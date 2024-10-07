@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { StudentService } from '../services/studentService';
 
 export class StudentController {
-  private studentService: StudentService;
+  protected studentService: StudentService;
 
   constructor() {
     this.studentService = new StudentService();

@@ -26,7 +26,7 @@ describe('CreditController', () => {
     // Create a new instance of CreditController
     creditController = new CreditController();
     // Inject the mock service
-    (creditController as any).creditService = mockCreditService;
+    (creditController as unknown as { creditService: CreditService }).creditService = mockCreditService;
 
     mockRequest = {
       body: {},

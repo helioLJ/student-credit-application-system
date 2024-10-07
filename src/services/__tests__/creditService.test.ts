@@ -2,7 +2,7 @@ import { CreditService } from '../creditService';
 import { AppDataSource } from '../../config/database';
 import { CreditApplication } from '../../models/CreditApplication';
 import { Student } from '../../models/Student';
-import { Repository } from 'typeorm';
+import { Repository, EntityTarget } from 'typeorm';
 
 jest.mock('../../config/database', () => ({
   AppDataSource: {
@@ -21,16 +21,16 @@ describe('CreditService', () => {
       save: jest.fn(),
       find: jest.fn(),
       findOne: jest.fn(),
-    } as any;
+    } as Partial<jest.Mocked<Repository<CreditApplication>>> as jest.Mocked<Repository<CreditApplication>>;
 
     mockStudentRepository = {
       findOne: jest.fn(),
-    } as any;
+    } as Partial<jest.Mocked<Repository<Student>>> as jest.Mocked<Repository<Student>>;
 
-    (AppDataSource.getRepository as jest.Mock).mockImplementation((entity) => {
+    (AppDataSource.getRepository as jest.Mock).mockImplementation((entity: EntityTarget<CreditApplication | Student>) => {
       if (entity === CreditApplication) return mockCreditApplicationRepository;
       if (entity === Student) return mockStudentRepository;
-      return {} as any;
+      throw new Error(`Unexpected entity: ${entity}`);
     });
 
     creditService = new CreditService();

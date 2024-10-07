@@ -13,7 +13,7 @@ describe('Admin Controller', () => {
 	beforeEach(() => {
 		mockAdminService = new AdminService() as jest.Mocked<AdminService>;
 		adminController = new AdminController();
-		(adminController as any).adminService = mockAdminService;
+		(adminController as unknown as { adminService: AdminService }).adminService = mockAdminService;
 
 		mockRequest = { 
 			body: {},

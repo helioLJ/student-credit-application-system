@@ -1,6 +1,7 @@
 import { StudentService } from '../studentService';
 import { AppDataSource } from '../../config/database';
 import { Student } from '../../models/Student';
+import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -15,14 +16,15 @@ jest.mock('jsonwebtoken');
 
 describe('StudentService', () => {
   let studentService: StudentService;
-  let mockStudentRepository: any;
+  let mockStudentRepository: jest.Mocked<Repository<Student>>;
 
   beforeEach(() => {
     mockStudentRepository = {
       findOne: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
-    };
+    } as unknown as jest.Mocked<Repository<Student>>;
+
     (AppDataSource.getRepository as jest.Mock).mockReturnValue(mockStudentRepository);
     studentService = new StudentService();
   });
@@ -43,7 +45,9 @@ describe('StudentService', () => {
     });
 
     it('should throw an error if email is already in use', async () => {
-      mockStudentRepository.findOne.mockResolvedValue({ id: 1, email: 'john@example.com' });
+      const existingStudent = new Student('John Doe', 'john@example.com', 'hashedPassword');
+      existingStudent.id = 1;
+      mockStudentRepository.findOne.mockResolvedValue(existingStudent);
 
       await expect(studentService.registerStudent('John Doe', 'john@example.com', 'password123'))
         .rejects.toThrow('Email already in use');
@@ -52,7 +56,8 @@ describe('StudentService', () => {
 
   describe('loginStudent', () => {
     it('should login a student successfully', async () => {
-      const mockStudent = { id: 1, email: 'john@example.com', password: 'hashedPassword' };
+      const mockStudent = new Student('John Doe', 'john@example.com', 'hashedPassword');
+      mockStudent.id = 1;
       mockStudentRepository.findOne.mockResolvedValue(mockStudent);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       (jwt.sign as jest.Mock).mockReturnValue('mockToken');
@@ -70,7 +75,8 @@ describe('StudentService', () => {
     });
 
     it('should throw an error if password is invalid', async () => {
-      const mockStudent = { id: 1, email: 'john@example.com', password: 'hashedPassword' };
+      const mockStudent = new Student('John Doe', 'john@example.com', 'hashedPassword');
+      mockStudent.id = 1;
       mockStudentRepository.findOne.mockResolvedValue(mockStudent);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 

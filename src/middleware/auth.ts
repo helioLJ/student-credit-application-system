@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthenticatedRequest } from '../types';
+import { AuthenticatedRequest, JwtPayload } from '../types';
 
 export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
@@ -11,14 +11,13 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
     return;
   }
 
-  jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
-    if (err) {
-      res.sendStatus(403);
-      return;
-    }
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
     req.user = user;
     next();
-  });
+  } catch (err) {
+    res.sendStatus(403);
+  }
 };
 
 export const authenticateAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
@@ -30,12 +29,15 @@ export const authenticateAdmin = (req: AuthenticatedRequest, res: Response, next
     return;
   }
 
-  jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
-    if (err || user.role !== 'admin') {
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+    if (user.role !== 'admin') {
       res.sendStatus(403);
       return;
     }
     req.user = user;
     next();
-  });
+  } catch (err) {
+    res.sendStatus(403);
+  }
 };

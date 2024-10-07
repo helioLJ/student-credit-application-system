@@ -25,7 +25,7 @@ describe('StudentController', () => {
     (StudentService as jest.Mock).mockImplementation(() => mockStudentService);
 
     studentController = new StudentController();
-    (studentController as any).studentService = mockStudentService;
+    (studentController as unknown as { studentService: StudentService }).studentService = mockStudentService;
   });
 
   describe('registerStudent', () => {

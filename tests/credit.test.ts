@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { DataSource } from 'typeorm';
+import { CreditApplication } from '../src/models/CreditApplication';
 import app from '../src/app';
 import { AppDataSource, initializeDataSource } from '../src/config/database';
 import { Admin } from '../src/models/Admin';
@@ -102,21 +102,21 @@ describe('Credit Application Integration Tests', () => {
   });
 
   describe('Student-Credit Application Relationship', () => {
-    it('should allow a student to view their own credit applications', async () => {
-      const response = await request(app)
-        .get('/api/credits/my-applications')
-        .set('Authorization', `Bearer ${authToken}`);
+  it('should allow a student to view their own credit applications', async () => {
+    const response = await request(app)
+      .get('/api/credits/my-applications')
+      .set('Authorization', `Bearer ${authToken}`);
 
-      if (response.status !== 200) {
-        console.error('Unexpected response:', response.status, response.body);
-      }
+    if (response.status !== 200) {
+      console.error('Unexpected response:', response.status, response.body);
+    }
 
-      expect(response.status).toBe(200);
+    expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
-      response.body.forEach((application: any) => {
+      response.body.forEach((application: CreditApplication) => {
         expect(application).toHaveProperty('student');
         expect(application.student.email).toBe('test@example.com');
-      });
+    });
     });
   });
 });

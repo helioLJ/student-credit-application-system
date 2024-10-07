@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { authenticateToken } from '../auth';
-import { AuthenticatedRequest } from '../../types';
+import { AuthenticatedRequest, JwtPayload } from '../../types';
 
 jest.mock('jsonwebtoken');
 
@@ -29,8 +29,8 @@ describe('Authentication Middleware', () => {
 
   it('should return 403 if token is invalid', () => {
     mockRequest.headers = { 'authorization': 'Bearer invalid_token' };
-    (jwt.verify as jest.Mock).mockImplementation((token, secret, callback) => {
-      callback(new Error('Invalid token'), null);
+    (jwt.verify as jest.Mock).mockImplementation(() => {
+      throw new Error('Invalid token');
     });
 
     authenticateToken(mockRequest as AuthenticatedRequest, mockResponse as Response, nextFunction);
@@ -41,10 +41,8 @@ describe('Authentication Middleware', () => {
 
   it('should call next() if token is valid', () => {
     mockRequest.headers = { 'authorization': 'Bearer valid_token' };
-    const mockUser = { id: 1, username: 'testuser' };
-    (jwt.verify as jest.Mock).mockImplementation((token, secret, callback) => {
-      callback(null, mockUser);
-    });
+    const mockUser: JwtPayload = { id: 1, username: 'testuser' };
+    (jwt.verify as jest.Mock).mockReturnValue(mockUser);
 
     authenticateToken(mockRequest as AuthenticatedRequest, mockResponse as Response, nextFunction);
 
@@ -55,10 +53,8 @@ describe('Authentication Middleware', () => {
 
   it('should handle "Bearer " prefix in Authorization header', () => {
     mockRequest.headers = { 'authorization': 'Bearer valid_token' };
-    const mockUser = { id: 1, username: 'testuser' };
-    (jwt.verify as jest.Mock).mockImplementation((token, secret, callback) => {
-      callback(null, mockUser);
-    });
+    const mockUser: JwtPayload = { id: 1, username: 'testuser' };
+    (jwt.verify as jest.Mock).mockReturnValue(mockUser);
 
     authenticateToken(mockRequest as AuthenticatedRequest, mockResponse as Response, nextFunction);
 
