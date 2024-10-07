@@ -3,16 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --silent",
+    "test": "NODE_ENV=test jest --silent",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "npx eslint . --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "start": "ts-node src/server.",
     "dev": "nodemon --exec ts-node src/server.ts",
-    "seed": "ts-node --project ./tsconfig.json ../node_modules/typeorm-extension/bin/cli.cjs seed:run -d src/db/dataSource.ts"
+    "seed": "ts-node src/seeds/runSeed.ts"
   },
   "keywords": [],
   "author": "",
@@ -46,6 +45,8 @@
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "sqlite3": "^5.1.7",
+    "typeorm-extension": "^3.6.1"
   }
 }

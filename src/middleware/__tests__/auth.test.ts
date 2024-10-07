@@ -28,7 +28,7 @@ describe('Authentication Middleware', () => {
   });
 
   it('should return 403 if token is invalid', () => {
-    mockRequest.headers = { 'authorization': 'Bearer invalid_token' };
+    mockRequest.headers = { authorization: 'Bearer invalid_token' };
     (jwt.verify as jest.Mock).mockImplementation(() => {
       throw new Error('Invalid token');
     });
@@ -40,7 +40,7 @@ describe('Authentication Middleware', () => {
   });
 
   it('should call next() if token is valid', () => {
-    mockRequest.headers = { 'authorization': 'Bearer valid_token' };
+    mockRequest.headers = { authorization: 'Bearer valid_token' };
     const mockUser: JwtPayload = { id: 1, username: 'testuser' };
     (jwt.verify as jest.Mock).mockReturnValue(mockUser);
 
@@ -52,7 +52,7 @@ describe('Authentication Middleware', () => {
   });
 
   it('should handle "Bearer " prefix in Authorization header', () => {
-    mockRequest.headers = { 'authorization': 'Bearer valid_token' };
+    mockRequest.headers = { authorization: 'Bearer valid_token' };
     const mockUser: JwtPayload = { id: 1, username: 'testuser' };
     (jwt.verify as jest.Mock).mockReturnValue(mockUser);
 

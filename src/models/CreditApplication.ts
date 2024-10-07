@@ -12,6 +12,6 @@ export class CreditApplication {
   @Column()
   status: 'pending' | 'approved' | 'rejected';
 
-  @ManyToOne(() => Student, student => student.creditApplications)
+  @ManyToOne(() => Student, (student) => student.creditApplications)
   student: Student;
 }

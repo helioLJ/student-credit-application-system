@@ -25,7 +25,8 @@ describe('StudentController', () => {
     (StudentService as jest.Mock).mockImplementation(() => mockStudentService);
 
     studentController = new StudentController();
-    (studentController as unknown as { studentService: StudentService }).studentService = mockStudentService;
+    (studentController as unknown as { studentService: StudentService }).studentService =
+      mockStudentService;
   });
 
   describe('registerStudent', () => {
@@ -40,7 +41,9 @@ describe('StudentController', () => {
       await studentController.registerStudent(mockRequest as Request, mockResponse as Response);
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Student registered successfully' });
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        message: 'Student registered successfully',
+      });
     });
 
     it('should return an error if email is already in use', async () => {

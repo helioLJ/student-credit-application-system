@@ -17,7 +17,9 @@ export class AdminService {
       throw new Error('Invalid credentials');
     }
 
-    const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET as string, {
+      expiresIn: '1h',
+    });
     return token;
   }
 }

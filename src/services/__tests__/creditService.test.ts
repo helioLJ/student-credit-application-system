@@ -21,17 +21,21 @@ describe('CreditService', () => {
       save: jest.fn(),
       find: jest.fn(),
       findOne: jest.fn(),
-    } as Partial<jest.Mocked<Repository<CreditApplication>>> as jest.Mocked<Repository<CreditApplication>>;
+    } as Partial<jest.Mocked<Repository<CreditApplication>>> as jest.Mocked<
+      Repository<CreditApplication>
+    >;
 
     mockStudentRepository = {
       findOne: jest.fn(),
     } as Partial<jest.Mocked<Repository<Student>>> as jest.Mocked<Repository<Student>>;
 
-    (AppDataSource.getRepository as jest.Mock).mockImplementation((entity: EntityTarget<CreditApplication | Student>) => {
-      if (entity === CreditApplication) return mockCreditApplicationRepository;
-      if (entity === Student) return mockStudentRepository;
-      throw new Error(`Unexpected entity: ${entity}`);
-    });
+    (AppDataSource.getRepository as jest.Mock).mockImplementation(
+      (entity: EntityTarget<CreditApplication | Student>) => {
+        if (entity === CreditApplication) return mockCreditApplicationRepository;
+        if (entity === Student) return mockStudentRepository;
+        throw new Error(`Unexpected entity: ${entity}`);
+      },
+    );
 
     creditService = new CreditService();
   });
@@ -72,7 +76,9 @@ describe('CreditService', () => {
         { id: 1, amount: 1000, status: 'pending' },
         { id: 2, amount: 2000, status: 'approved' },
       ];
-      mockCreditApplicationRepository.find.mockResolvedValue(mockApplications as CreditApplication[]);
+      mockCreditApplicationRepository.find.mockResolvedValue(
+        mockApplications as CreditApplication[],
+      );
 
       const result = await creditService.getAllApplications();
 
@@ -88,20 +94,28 @@ describe('CreditService', () => {
       const mockApplication = { id: applicationId, amount: 1000, status: 'pending' };
       const updatedApplication = { ...mockApplication, status: newStatus };
 
-      mockCreditApplicationRepository.findOne.mockResolvedValue(mockApplication as CreditApplication);
-      mockCreditApplicationRepository.save.mockResolvedValue(updatedApplication as CreditApplication);
+      mockCreditApplicationRepository.findOne.mockResolvedValue(
+        mockApplication as CreditApplication,
+      );
+      mockCreditApplicationRepository.save.mockResolvedValue(
+        updatedApplication as CreditApplication,
+      );
 
       const result = await creditService.updateApplicationStatus(applicationId, newStatus);
 
       expect(result).toEqual(updatedApplication);
-      expect(mockCreditApplicationRepository.findOne).toHaveBeenCalledWith({ where: { id: applicationId } });
+      expect(mockCreditApplicationRepository.findOne).toHaveBeenCalledWith({
+        where: { id: applicationId },
+      });
       expect(mockCreditApplicationRepository.save).toHaveBeenCalledWith(updatedApplication);
     });
 
     it('should throw an error if application is not found', async () => {
       mockCreditApplicationRepository.findOne.mockResolvedValue(null);
 
-      await expect(creditService.updateApplicationStatus(1, 'approved')).rejects.toThrow('Application not found');
+      await expect(creditService.updateApplicationStatus(1, 'approved')).rejects.toThrow(
+        'Application not found',
+      );
     });
   });
 
@@ -112,7 +126,9 @@ describe('CreditService', () => {
         { id: 1, amount: 1000, status: 'pending' },
         { id: 2, amount: 2000, status: 'approved' },
       ];
-      mockCreditApplicationRepository.find.mockResolvedValue(mockApplications as CreditApplication[]);
+      mockCreditApplicationRepository.find.mockResolvedValue(
+        mockApplications as CreditApplication[],
+      );
 
       const result = await creditService.getStudentApplications(studentId);
 
@@ -128,7 +144,9 @@ describe('CreditService', () => {
     it('should return a credit application by id', async () => {
       const applicationId = 1;
       const mockApplication = { id: applicationId, amount: 1000, status: 'pending' };
-      mockCreditApplicationRepository.findOne.mockResolvedValue(mockApplication as CreditApplication);
+      mockCreditApplicationRepository.findOne.mockResolvedValue(
+        mockApplication as CreditApplication,
+      );
 
       const result = await creditService.getApplicationById(applicationId);
 

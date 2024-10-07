@@ -22,10 +22,12 @@ app.use('/api/admin', adminRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Global error handler
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void => {
-  console.error('Error details:', err);
-  res.status(500).json({ error: 'Internal server error', message: err.message });
-});
+app.use(
+  (err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void => {
+    console.error('Error details:', err);
+    res.status(500).json({ error: 'Internal server error', message: err.message });
+  },
+);
 
 export const startServer = async (): Promise<void> => {
   await initializeDataSource();

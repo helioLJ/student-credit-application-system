@@ -45,7 +45,10 @@ export class CreditController {
     try {
       const { id } = req.params;
       const { status } = req.body;
-      const application = await this.creditService.updateApplicationStatus(Number(id), status as CreditApplication['status']);
+      const application = await this.creditService.updateApplicationStatus(
+        Number(id),
+        status as CreditApplication['status'],
+      );
       res.status(200).json({ message: 'Credit application updated successfully', application });
     } catch (error) {
       if (error instanceof Error && error.message === 'Application not found') {

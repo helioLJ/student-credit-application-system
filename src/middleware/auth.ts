@@ -2,7 +2,11 @@ import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthenticatedRequest, JwtPayload } from '../types';
 
-export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const authenticateToken = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -20,7 +24,11 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
   }
 };
 
-export const authenticateAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const authenticateAdmin = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 

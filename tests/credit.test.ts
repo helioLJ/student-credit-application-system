@@ -11,6 +11,24 @@ describe('Credit Application Integration Tests', () => {
 
   beforeAll(async () => {
     await initializeDataSource();
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+  });
+
+  afterAll(async () => {
+    if (AppDataSource.isInitialized) {
+      await AppDataSource.destroy();
+    }
+  });
+
+  beforeEach(async () => {
+    // Clear the database before each test
+    const entities = AppDataSource.entityMetadatas;
+    for (const entity of entities) {
+      const repository = AppDataSource.getRepository(entity.name);
+      await repository.clear();
+    }
 
     // Create an admin user
     const adminRepository = AppDataSource.getRepository(Admin);
@@ -37,17 +55,9 @@ describe('Credit Application Integration Tests', () => {
       .post('/api/admin/login')
       .send({ email: 'admin@example.com', password: 'adminpass' });
 
-    if (adminLoginResponse.status !== 200) {
-      console.error('Admin login failed:', adminLoginResponse.body);
-    }
-
     expect(adminLoginResponse.status).toBe(200);
     expect(adminLoginResponse.body).toHaveProperty('token');
     adminToken = adminLoginResponse.body.token;
-  });
-
-  afterAll(async () => {
-    await AppDataSource.destroy();
   });
 
   describe('Credit Application Process', () => {
@@ -57,14 +67,17 @@ describe('Credit Application Integration Tests', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .send({ amount: 5000 });
 
-      if (response.status !== 201) {
-        console.error('Unexpected response:', response.status, response.body);
-      }
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('message', 'Credit application submitted successfully');
     });
 
     it('should retrieve all credit applications for an admin', async () => {
+      // First, create a credit application
+      await request(app)
+        .post('/api/credits/apply')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ amount: 5000 });
+
       const response = await request(app)
         .get('/api/credits')
         .set('Authorization', `Bearer ${adminToken}`);
@@ -102,21 +115,24 @@ describe('Credit Application Integration Tests', () => {
   });
 
   describe('Student-Credit Application Relationship', () => {
-  it('should allow a student to view their own credit applications', async () => {
-    const response = await request(app)
-      .get('/api/credits/my-applications')
-      .set('Authorization', `Bearer ${authToken}`);
+    it('should allow a student to view their own credit applications', async () => {
+      // First, create a credit application
+      await request(app)
+        .post('/api/credits/apply')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ amount: 5000 });
 
-    if (response.status !== 200) {
-      console.error('Unexpected response:', response.status, response.body);
-    }
+      const response = await request(app)
+        .get('/api/credits/my-applications')
+        .set('Authorization', `Bearer ${authToken}`);
 
-    expect(response.status).toBe(200);
+      expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
+      expect(response.body.length).toBeGreaterThan(0);
       response.body.forEach((application: CreditApplication) => {
         expect(application).toHaveProperty('student');
         expect(application.student.email).toBe('test@example.com');
-    });
+      });
     });
   });
 });

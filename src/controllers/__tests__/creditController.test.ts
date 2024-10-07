@@ -26,7 +26,8 @@ describe('CreditController', () => {
     // Create a new instance of CreditController
     creditController = new CreditController();
     // Inject the mock service
-    (creditController as unknown as { creditService: CreditService }).creditService = mockCreditService;
+    (creditController as unknown as { creditService: CreditService }).creditService =
+      mockCreditService;
 
     mockRequest = {
       body: {},
@@ -46,7 +47,10 @@ describe('CreditController', () => {
       const mockApplication = { id: 1, amount: 1000, status: 'pending' } as CreditApplication;
       mockCreditService.applyForCredit.mockResolvedValue(mockApplication);
 
-      await creditController.applyCreditApplication(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.applyCreditApplication(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -59,7 +63,10 @@ describe('CreditController', () => {
       mockRequest.body = { amount: 1000 };
       mockCreditService.applyForCredit.mockRejectedValue(new Error('Student not found'));
 
-      await creditController.applyCreditApplication(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.applyCreditApplication(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({ error: 'Student not found' });
@@ -74,7 +81,10 @@ describe('CreditController', () => {
       ] as CreditApplication[];
       mockCreditService.getAllApplications.mockResolvedValue(mockApplications);
 
-      await creditController.getCreditApplications(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.getCreditApplications(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(mockApplications);
@@ -85,10 +95,17 @@ describe('CreditController', () => {
     it('should update a credit application successfully', async () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { status: 'approved' };
-      const mockUpdatedApplication = { id: 1, amount: 1000, status: 'approved' } as CreditApplication;
+      const mockUpdatedApplication = {
+        id: 1,
+        amount: 1000,
+        status: 'approved',
+      } as CreditApplication;
       mockCreditService.updateApplicationStatus.mockResolvedValue(mockUpdatedApplication);
 
-      await creditController.updateCreditApplication(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.updateCreditApplication(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -100,9 +117,14 @@ describe('CreditController', () => {
     it('should return an error if application is not found', async () => {
       mockRequest.params = { id: '1' };
       mockRequest.body = { status: 'approved' };
-      mockCreditService.updateApplicationStatus.mockRejectedValue(new Error('Application not found'));
+      mockCreditService.updateApplicationStatus.mockRejectedValue(
+        new Error('Application not found'),
+      );
 
-      await creditController.updateCreditApplication(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.updateCreditApplication(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({ error: 'Application not found' });
@@ -117,7 +139,10 @@ describe('CreditController', () => {
       ] as CreditApplication[];
       mockCreditService.getStudentApplications.mockResolvedValue(mockApplications);
 
-      await creditController.getStudentCreditApplications(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.getStudentCreditApplications(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(mockApplications);
@@ -126,7 +151,10 @@ describe('CreditController', () => {
     it('should return an error if user is not authenticated', async () => {
       mockRequest.user = undefined;
 
-      await creditController.getStudentCreditApplications(mockRequest as AuthenticatedRequest, mockResponse as Response);
+      await creditController.getStudentCreditApplications(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({ error: 'Unauthorized' });

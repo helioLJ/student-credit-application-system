@@ -28,7 +28,9 @@ export class StudentService {
       throw new Error('Invalid credentials');
     }
 
-    const token = jwt.sign({ id: student.id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign({ id: student.id }, process.env.JWT_SECRET as string, {
+      expiresIn: '1h',
+    });
     return token;
   }
 }

@@ -44,7 +44,9 @@ const creditController = new CreditController();
  *       500:
  *         description: Internal server error
  */
-router.post('/apply', authenticateToken, (req, res) => creditController.applyCreditApplication(req, res));
+router.post('/apply', authenticateToken, (req, res) =>
+  creditController.applyCreditApplication(req, res),
+);
 
 /**
  * @swagger
@@ -116,7 +118,9 @@ router.get('/', authenticateAdmin, (req, res) => creditController.getCreditAppli
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', authenticateAdmin, (req, res) => creditController.updateCreditApplication(req, res));
+router.put('/:id', authenticateAdmin, (req, res) =>
+  creditController.updateCreditApplication(req, res),
+);
 
 /**
  * @swagger
@@ -140,7 +144,9 @@ router.put('/:id', authenticateAdmin, (req, res) => creditController.updateCredi
  *       500:
  *         description: Internal server error
  */
-router.get('/my-applications', authenticateToken, (req, res) => creditController.getStudentCreditApplications(req, res));
+router.get('/my-applications', authenticateToken, (req, res) =>
+  creditController.getStudentCreditApplications(req, res),
+);
 
 export default router;
 

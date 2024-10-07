@@ -49,8 +49,9 @@ describe('StudentService', () => {
       existingStudent.id = 1;
       mockStudentRepository.findOne.mockResolvedValue(existingStudent);
 
-      await expect(studentService.registerStudent('John Doe', 'john@example.com', 'password123'))
-        .rejects.toThrow('Email already in use');
+      await expect(
+        studentService.registerStudent('John Doe', 'john@example.com', 'password123'),
+      ).rejects.toThrow('Email already in use');
     });
   });
 
@@ -70,8 +71,9 @@ describe('StudentService', () => {
     it('should throw an error if student is not found', async () => {
       mockStudentRepository.findOne.mockResolvedValue(null);
 
-      await expect(studentService.loginStudent('john@example.com', 'password123'))
-        .rejects.toThrow('Invalid credentials');
+      await expect(studentService.loginStudent('john@example.com', 'password123')).rejects.toThrow(
+        'Invalid credentials',
+      );
     });
 
     it('should throw an error if password is invalid', async () => {
@@ -80,8 +82,9 @@ describe('StudentService', () => {
       mockStudentRepository.findOne.mockResolvedValue(mockStudent);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(studentService.loginStudent('john@example.com', 'wrongpassword'))
-        .rejects.toThrow('Invalid credentials');
+      await expect(
+        studentService.loginStudent('john@example.com', 'wrongpassword'),
+      ).rejects.toThrow('Invalid credentials');
     });
   });
 });

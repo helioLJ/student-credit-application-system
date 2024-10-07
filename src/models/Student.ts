@@ -15,7 +15,7 @@ export class Student {
   @Column({ nullable: false })
   password: string;
 
-  @OneToMany(() => CreditApplication, creditApplication => creditApplication.student)
+  @OneToMany(() => CreditApplication, (creditApplication) => creditApplication.student)
   creditApplications: CreditApplication[];
 
   constructor(name: string, email: string, password: string) {

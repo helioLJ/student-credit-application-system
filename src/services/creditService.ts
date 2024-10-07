@@ -21,7 +21,7 @@ export class CreditService {
     const newApplication = this.creditApplicationRepository.create({
       amount,
       status: 'pending',
-      student
+      student,
     });
 
     return await this.creditApplicationRepository.save(newApplication);
@@ -31,7 +31,10 @@ export class CreditService {
     return await this.creditApplicationRepository.find({ relations: ['student'] });
   }
 
-  async updateApplicationStatus(id: number, status: CreditApplication['status']): Promise<CreditApplication> {
+  async updateApplicationStatus(
+    id: number,
+    status: CreditApplication['status'],
+  ): Promise<CreditApplication> {
     const application = await this.creditApplicationRepository.findOne({ where: { id } });
     if (!application) {
       throw new Error('Application not found');
@@ -42,16 +45,16 @@ export class CreditService {
   }
 
   async getStudentApplications(studentId: number): Promise<CreditApplication[]> {
-    return await this.creditApplicationRepository.find({ 
+    return await this.creditApplicationRepository.find({
       where: { student: { id: studentId } },
-      relations: ['student']
+      relations: ['student'],
     });
   }
 
   async getApplicationById(id: number): Promise<CreditApplication | null> {
-    return await this.creditApplicationRepository.findOne({ 
+    return await this.creditApplicationRepository.findOne({
       where: { id },
-      relations: ['student']
+      relations: ['student'],
     });
   }
 }
