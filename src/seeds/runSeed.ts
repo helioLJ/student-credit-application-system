@@ -1,7 +1,7 @@
 import { AppDataSource } from '../config/database';
 import InitialSeeder from './initialSeed';
 
-async function runSeed() {
+async function runSeed(): Promise<void> {
   try {
     await AppDataSource.initialize();
     console.log('Data Source has been initialized!');
@@ -17,4 +17,4 @@ async function runSeed() {
   }
 }
 
-runSeed().catch(error => console.log(error));
+runSeed().catch((error) => console.log(error));

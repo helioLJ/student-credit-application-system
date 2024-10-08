@@ -13,7 +13,8 @@
     "dev": "nodemon --exec ts-node src/server.ts",
     "seed": "ts-node src/seeds/runSeed.ts",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration:run": "npm run typeorm -- migration:run -d src/config/database.ts"
+    "migration:run": "npm run typeorm -- migration:run -d src/config/database.ts",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +38,7 @@
     "typescript": "~5.5.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
     "@types/bcrypt": "^5.0.2",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.0",
@@ -47,8 +49,16 @@
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "sqlite3": "^5.1.7",
     "typeorm-extension": "^3.6.1"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

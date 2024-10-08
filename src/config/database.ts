@@ -1,5 +1,5 @@
-import { DataSource, DataSourceOptions } from "typeorm";
-import { SeederOptions } from "typeorm-extension";
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { SeederOptions } from 'typeorm-extension';
 import { Student } from '../models/Student';
 import { CreditApplication } from '../models/CreditApplication';
 import { Admin } from '../models/Admin';
@@ -20,7 +20,7 @@ const dbConfig: DataSourceOptions & SeederOptions = {
 
 export const AppDataSource = new DataSource(dbConfig);
 
-export const initializeAppDataSource = async () => {
+export const initializeAppDataSource = async (): Promise<DataSource> => {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize();
   }
