@@ -102,6 +102,31 @@ To set up and run this project locally, follow these steps:
      DB_NAME=your_database_name
      JWT_SECRET=your_jwt_secret
      ```
+   - Copy the `ormconfig.example.json` file to `ormconfig.json`:
+     ```
+     cp ormconfig.example.json ormconfig.json
+     ```
+   - Open the `ormconfig.json` file and update the database credentials.
+     ```json
+     {
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "myapp_user",
+    "password": "myapp_password",
+    "database": "myapp_db",
+    "synchronize": true,
+    "logging": true,
+    "entities": ["src/entities/**/*.ts"],
+    "migrations": ["src/migrations/**/*.ts"],
+    "subscribers": ["src/subscribers/**/*.ts"],
+    "cli": {
+      "entitiesDir": "src/entities",
+      "migrationsDir": "src/migrations",
+      "subscribersDir": "src/subscribers"
+       }
+     }
+     ```
 
 5. **Run database migrations**
    ```
